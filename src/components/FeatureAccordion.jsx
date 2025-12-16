@@ -57,7 +57,6 @@ export default function FeatureAccordion() {
     });
   }, [active]);
 
-  // Auto cycle
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setActive((prev) => (prev + 1) % FEATURES.length);
@@ -66,7 +65,6 @@ export default function FeatureAccordion() {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // Reset auto cycle on click
   const handleClick = (i) => {
     clearInterval(intervalRef.current);
     setActive(i);

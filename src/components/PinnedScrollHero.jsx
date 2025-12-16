@@ -44,11 +44,11 @@ export default function PinnedHeroReveal() {
                     // Scroll budget for the reveal (increase for slower flow)
                     end: "+=1200",
 
-                    scrub: 0.6,        // smooth inertia
-                    pin: true,         // pause the hero
+                    scrub: 0.6,        
+                    pin: true,          
                     anticipatePin: 1,
                     invalidateOnRefresh: true,
-                    markers: true,   // uncomment to debug
+                    
 
                 },
             });

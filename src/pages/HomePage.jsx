@@ -11,14 +11,18 @@ function HomePage() {
       Homepage
       <ParallaxBlocks />
       <div className='-mt-[65vh] ' >
+        {/* <div className='h-40' /> */}
 
         <h1 className=' text-center ' >Discover the latest <span className='bg-blue-100  ' >
 
           updates   </span>  From Chrome  </h1>
         <PinnedHeroReveal />
+        {/* <div className='-mt-[1000px] ' > */}
         <FeatureAccordion />
         <FloatCallouts />
-        <WindowCarousel />
+
+        {/* </div> */}
+        {/* <WindowCarousel /> */}
       </div>
 
 
