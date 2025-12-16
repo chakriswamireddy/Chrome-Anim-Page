@@ -1,6 +1,12 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import pc1 from '../assets/pictures/pc1.webp'
+import pc2 from '../assets/pictures/pc2.webp'
+import Mobile2 from '../assets/pictures/Mobile2.webp'
+import Mobile1 from '../assets/pictures/Mobile1.jpg'
+
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,34 +21,30 @@ export default function ParallaxBlocks() {
   const mobile2Ref = useRef(null);
   const mobile3Ref = useRef(null);
 
+  const trackRef = useRef(null);
+
 
   useLayoutEffect(() => {
     if (!sectionRef.current || !pc1Ref.current || !pc2Ref.current) return;
 
     const ctx = gsap.context(() => {
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top center",
-          end: "bottom top",
+          end: "bottom bottom",
           scrub: true,
-          invalidateOnRefresh: true,
+          markers: true,
         },
       });
 
-      tl.to(pc1Ref.current, {
-        width: "20vw",
-        y: -80,
-        ease: "none",
-      }).to(
-        pc2Ref.current,
-        {
-          width: "20vw",
-          y: 80,
-          ease: "none",
-        },
-        0
-      );
+      tl.from(pc1Ref.current, { x: 50 })
+        .from(mobile1Ref.current, { opacity: 0, y: 50 }, "<")
+        .from(pc2Ref.current, { scale: 1.4 }, "<")
+        .from(mobile2Ref.current, { y: -50 }, "<");
+
+
 
       ScrollTrigger.refresh();
     }, sectionRef);
@@ -51,85 +53,115 @@ export default function ParallaxBlocks() {
   }, []);
 
   useLayoutEffect(() => {
-    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      const track = trackRef.current;
+      const section = sectionRef.current;
+      const lastItem = track.lastElementChild;
 
-    const el = sectionRef.current;
+      const totalScroll =
+        track.scrollWidth - window.innerWidth;
 
-    const onMove = (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - (rect.left + rect.width / 2);
-      const y = e.clientY - (rect.top + rect.height / 2);
+      console.log(totalScroll)
 
-      gsap.to(pc1Ref.current, {
-        x: x * 0.03,
-        y: y * 0.03,
-        duration: 0.3,
-        overwrite: "auto",
+      const stopAt =
+        lastItem.offsetLeft +
+        lastItem.offsetWidth / 2 -
+        section.offsetWidth;
+        const maxTranslate = Math.min(totalScroll, stopAt);
+
+        console.log(totalScroll)
+
+
+
+      gsap.to(track, {
+        x: -totalScroll,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "bottom bottom",    
+          end: () => `+=${totalScroll}`,
+          scrub: true,
+          pin: true,
+          // pinSpacing: false,
+          anticipatePin: 1,
+          markers: true,
+          invalidateOnRefresh: true
+
+        },
       });
+    }, sectionRef);
 
-      gsap.to(pc2Ref.current, {
-        x: x * -0.03,
-        y: y * -0.03,
-        duration: 0.3,
-        overwrite: "auto",
-      });
-    };
-
-    el.addEventListener("mousemove", onMove);
-    return () => el.removeEventListener("mousemove", onMove);
+    return () => ctx.revert();
   }, []);
+
+
+
+  // useLayoutEffect(() => {
+  //   if (!sectionRef.current) return;
+
+  //   const el = sectionRef.current;
+
+  //   const onMove = (e) => {
+  //     const rect = el.getBoundingClientRect();
+  //     const x = e.clientX - (rect.left + rect.width / 2);
+  //     const y = e.clientY - (rect.top + rect.height / 2);
+
+  //     gsap.to(pc1Ref.current, {
+  //       x: x * 0.03,
+  //       y: y * 0.03,
+  //       duration: 0.3,
+  //       overwrite: "auto",
+  //     });
+
+  //     gsap.to(pc2Ref.current, {
+  //       x: x * -0.03,
+  //       y: y * -0.03,
+  //       duration: 0.3,
+  //       overwrite: "auto",
+  //     });
+  //   };
+
+  //   el.addEventListener("mousemove", onMove);
+  //   return () => el.removeEventListener("mousemove", onMove);
+  // }, []);
 
   return (
     <>
- 
-      <div className="size-40 border w-screen" >
+
+      <div className="size-96 border w-screen" >
 
       </div>
-      <section
-        ref={sectionRef}
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0 5vw",
-          overflowX: "hidden",
-          height:"500px",
-          border:'1px soild blue'
-        }}
-      >
-        <div
-          ref={pc1Ref}  className="w-[300px] h-[280px] bg-[#2a1abd] -mt-40  "
-          style={{translate:"100px 0" , }}
-         
-        />
-        <div
-          ref={mobile1Ref}
-          className="w-[50vw] h-[280px] bg-[#a4bd1a] "
-        > Mobile</div>
-        <div
-          ref={pc2Ref}
-          style={{
-            width: "50vw",
-            height: "280px",
-            background: "#4f46e5",
-          }}
-        />
-         <div
-          ref={mobile2Ref}
-          className="w-[50vw] h-[280px] bg-[#ad3b6b] "
-        > Mobile</div>
-        <div
-          ref={pc3Ref}
-          style={{
-            width: "50vw",
-            height: "280px",
-            background: "#22c55e",
-          }}
-        />
+      <div ref={sectionRef}   className="relative  overflow-visible">
 
-      </section>
+        <div className="pointer-events-none absolute  border inset-0 -left-[20%] flex gap-10 px-[10px]">
+          <div ref={trackRef} className="flex gap-12">
 
-      <section style={{ height: "100vh" }} />
+            <img ref={pc1Ref} src={pc1} className="h-70   scale-[135%] object-contain " />
+            <img ref={mobile1Ref} src={Mobile1} className="h-[280px] aspect-[9/16]" />
+            <img ref={pc2Ref} src={pc2} className="h-[280px] scale-[135%]  object-contain" />
+            <img ref={mobile2Ref} src={Mobile2} className="h-[280px] aspect-[9/16]" />
+
+            <img ref={pc3Ref} src={pc1} className="h-[280px] scale-[135%] object-contain" />
+          </div>
+
+        </div>
+
+        <div className="flex justify-start  overflow-x-auto  overflow-y-hidden px-[10px] opacity-0">
+
+          <img src={pc1} className=" top-0 h-full object-contain" />
+          <img src={Mobile1} className="shrink-0 h-70 " />
+          <img src={pc2} className="shrink-0 h-70  " />
+
+          <img src={Mobile2} className="h-[280px] aspect-[9/16]" />
+
+          <img src={pc1} className="shrink-0 h-70  " />
+
+        </div>
+      
+
+      </div>
+
+
     </>
   );
 }

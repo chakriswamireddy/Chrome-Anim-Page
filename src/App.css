@@ -1,24 +1,10 @@
 @import "tailwindcss";
 
-.parallax-section {
-  height: 100vh;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5vw;
-  overflow: hidden;
-}
+ 
 
-.block {
-  height: 280px;
-  width: 50vw;
-  will-change: transform, width;
-}
 
-.left {
-  background-color: #4f46e5;
-}
-
-.right {
-  background-color: #22c55e;
+@layer {
+  .crop-png {
+    @apply scale-[135%]
+  }
 }
