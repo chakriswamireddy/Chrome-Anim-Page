@@ -116,25 +116,25 @@ export default function WindowCarousel() {
 
 
   useEffect(() => {
-  if (!emblaApi) return;
+    if (!emblaApi) return;
 
-  const onSelect = () => {
-    const index = emblaApi.selectedScrollSnap();
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap();
 
-    if (index !== 0 && ScrollTrigger.getById("intro")) {
-      ScrollTrigger.getById("intro").disable(false);
-    }
+      if (index !== 0 && ScrollTrigger.getById("intro")) {
+        ScrollTrigger.getById("intro").disable(false);
+      }
 
-    if (index === 0 && ScrollTrigger.getById("intro")) {
-      ScrollTrigger.getById("intro").enable(false);
-    }
-  };
+      if (index === 0 && ScrollTrigger.getById("intro")) {
+        ScrollTrigger.getById("intro").enable(false);
+      }
+    };
 
-  emblaApi.on("select", onSelect);
-  onSelect();
+    emblaApi.on("select", onSelect);
+    onSelect();
 
-  return () => emblaApi.off("select", onSelect);
-}, [emblaApi]);
+    return () => emblaApi.off("select", onSelect);
+  }, [emblaApi]);
 
 
 
@@ -144,7 +144,7 @@ export default function WindowCarousel() {
       !firstSlideRef.current ||
       !videoRef.current ||
       !videoMaskRef.current ||
-      !slidesRef.current.length 
+      !slidesRef.current.length
     ) return;
 
     const ctx = gsap.context(() => {
@@ -153,7 +153,7 @@ export default function WindowCarousel() {
       });
 
       gsap.set(videoRef.current, {
-        transformOrigin: "0% 100%",
+        transformOrigin: "  0%  100%",
       });
 
       const others = slidesRef.current.slice(1);
@@ -162,7 +162,7 @@ export default function WindowCarousel() {
         scrollTrigger: {
           id: "intro",
           trigger: sectionRef.current,
-          start: "top top",
+          start: "top 10%",
           end: "+=1200",
           pin: true,
           scrub: 0.6,
@@ -192,8 +192,13 @@ export default function WindowCarousel() {
         .fromTo(
           firstSlideRef.current,
           {
-            scale: 1.3,
-            yPercent: 50,
+            scale: () => {
+              const vh = window.innerHeight;
+              const elH = firstSlideRef.current.offsetHeight;
+              return 1 + (vh * 0.2) / elH;
+            },
+            // yPercent: 70,
+
           },
           {
             scale: 1,
@@ -202,22 +207,26 @@ export default function WindowCarousel() {
           })
 
 
-
-        // Video scales down INSIDE mask (Chrome-style crop)
-        .fromTo(
+        // PHASE 1 — scale UP (centered)
+        .to(
           videoRef.current,
-          { scale: 1.35 },
-          { scale: 0.8, ease: "none" },
-          0
+  
+          { scale: 1 , ease: "none" }
         )
 
-        // Optional: subtle upward parallax for realism
-        .fromTo(
-          videoRef.current,
-          { y: 0, ease: "none" },
-          { y: 120, x: -10, },
-          0
-        )
+        // PHASE 2 — switch origin instantly
+        .set(videoRef.current, {
+          transformOrigin: "0% 100%", // bottom-left
+        },0)
+
+        // PHASE 3 — scale DOWN + move (single direction)
+        .to(videoRef.current, {
+          scale: 0.85,
+          x: -10,
+          y: 120,
+          ease: "none",
+        })
+
 
         // Push other slides away during intro
         .fromTo(
