@@ -8,7 +8,8 @@ import WindowCarousel from '../components/WindowCarousel'
 function HomePage() {
   return (
     <div>
-      Homepage
+      
+        <h1 className='text-center' > Homepage </h1> 
       <ParallaxBlocks />
       <div className='-mt-[65vh] ' >
         {/* <div className='h-40' /> */}
@@ -22,7 +23,7 @@ function HomePage() {
         <FloatCallouts />
 
         {/* </div> */}
-        {/* <WindowCarousel /> */}
+        <WindowCarousel />
       </div>
 
 

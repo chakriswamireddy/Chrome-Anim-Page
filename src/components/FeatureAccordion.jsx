@@ -91,7 +91,7 @@ useEffect(() => {
 }, [active]);
 
   return (
-    <section className="flex gap-16 items-center px-10">
+    <section className="flex gap-16   justify-center items-center px-10">
       {/* LEFT VISUAL */}
       <div ref={mediaRef} className="size-96 rounded-3xl overflow-hidden bg-black">
         { FEATURES[active].image ?

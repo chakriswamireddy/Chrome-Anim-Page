@@ -115,12 +115,36 @@ export default function WindowCarousel() {
   }, [emblaApi]);
 
 
+  useEffect(() => {
+  if (!emblaApi) return;
+
+  const onSelect = () => {
+    const index = emblaApi.selectedScrollSnap();
+
+    if (index !== 0 && ScrollTrigger.getById("intro")) {
+      ScrollTrigger.getById("intro").disable(false);
+    }
+
+    if (index === 0 && ScrollTrigger.getById("intro")) {
+      ScrollTrigger.getById("intro").enable(false);
+    }
+  };
+
+  emblaApi.on("select", onSelect);
+  onSelect();
+
+  return () => emblaApi.off("select", onSelect);
+}, [emblaApi]);
+
+
+
+
   useLayoutEffect(() => {
     if (
       !firstSlideRef.current ||
       !videoRef.current ||
       !videoMaskRef.current ||
-      !slidesRef.current.length
+      !slidesRef.current.length 
     ) return;
 
     const ctx = gsap.context(() => {
@@ -136,21 +160,39 @@ export default function WindowCarousel() {
 
       gsap.timeline({
         scrollTrigger: {
+          id: "intro",
           trigger: sectionRef.current,
-          start: "top 70%",
-          end: "+=600",
+          start: "top top",
+          end: "+=1200",
+          pin: true,
           scrub: 0.6,
           invalidateOnRefresh: true,
-          onLeave: () => {
-            introDoneRef.current = true;
-          },
+          // onLeave: () => {
+          //   introDoneRef.current = true;
+          //   gsap.set(slidesRef.current.slice(1), {
+          //     scale: 1,
+          //     clearProps: "transform",
+          //   });
+          // },
+          // onUpdate: (self) => {
+          //   if (self.progress >= 0.98) {
+          //     introDoneRef.current = true;
+
+          //     gsap.to(slidesRef.current.slice(1), {
+          //       opacity: 1,
+          //       duration: 0.2,
+          //       overwrite: true,
+          //     });
+          //   }
+          // },
+
         },
       })
         // First slide scales down
         .fromTo(
           firstSlideRef.current,
           {
-            scale: 2,
+            scale: 1.3,
             yPercent: 50,
           },
           {
@@ -158,14 +200,14 @@ export default function WindowCarousel() {
             yPercent: 0,
             ease: "none",
           })
-        
-        
+
+
 
         // Video scales down INSIDE mask (Chrome-style crop)
         .fromTo(
           videoRef.current,
           { scale: 1.35 },
-          { scale: 1, ease: "none" },
+          { scale: 0.8, ease: "none" },
           0
         )
 
@@ -173,17 +215,25 @@ export default function WindowCarousel() {
         .fromTo(
           videoRef.current,
           { y: 0, ease: "none" },
-          { y: 60, x:-10,  },
+          { y: 120, x: -10, },
           0
         )
 
         // Push other slides away during intro
         .fromTo(
           others,
-          { x: 200, opacity: 0.6 },
-          { x: 0, scale:0,   opacity: 1, ease: "none" },
+          {
+            xPercent: 30,
+            opacity: 0,
+          },
+          {
+            xPercent: 0,
+            opacity: 1,
+            ease: "none",
+          },
           0
         );
+
     }, sectionRef);
 
     return () => ctx.revert();
@@ -209,11 +259,11 @@ export default function WindowCarousel() {
                   slidesRef.current[indx] = el;
                   if (indx === 0) firstSlideRef.current = el;
                 }}
-                className="relative shrink-0 min-w-[70vw] h-[420px]
+                className="relative shrink-0 basis-[70vw] max-w-[70vw] h-[420px]
                rounded-3xl bg-white shadow-xl overflow-hidden"
               >
 
-                <div className={` border h-full w-full ${indx == 2 ? "flex   gap-0 pl-10 justify-between" : "flex flex-col items-center justify-between"}  `} >
+                <div className={` border h-full  ${indx == 2 ? "flex   gap-0 pl-10 justify-between" : "flex flex-col items-center justify-between"}  `} >
 
                   <div className={`${indx == 2 ? "flex  flex-col items-center justify-between border" : ""}`} >
 
@@ -252,6 +302,7 @@ export default function WindowCarousel() {
                             ref={videoRef}
                             src={video}
                             muted
+                            autoPlay
                             loop
                             playsInline
                             className="

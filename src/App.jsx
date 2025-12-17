@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage'
 function App() {
   return (
     <div>
-      app
+     <h1 className='text-center' > app </h1> 
       <HomePage />
       
     </div>

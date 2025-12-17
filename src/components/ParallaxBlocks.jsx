@@ -24,52 +24,54 @@ export default function ParallaxBlocks() {
   const trackRef = useRef(null);
 
   useLayoutEffect(() => {
-  if (!sectionRef.current || !trackRef.current) return;
+    if (!sectionRef.current || !trackRef.current) return;
 
-  const ctx = gsap.context(() => {
-    const section = sectionRef.current;
-    const track = trackRef.current;
-    const lastItem = track.lastElementChild;
+    const ctx = gsap.context(() => {
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      const lastItem = track.lastElementChild;
 
-    const totalScroll =
-      track.scrollWidth - section.offsetWidth;
+      const totalScroll =
+        track.scrollWidth - section.offsetWidth;
 
-    const stopAt =
-      lastItem.offsetLeft +
-      lastItem.offsetWidth / 2 -
-      section.offsetWidth;
+      const stopAt =
+        lastItem.offsetLeft +
+        lastItem.offsetWidth / 2 -
+        section.offsetWidth;
 
-    const maxTranslate = Math.min(totalScroll, stopAt);
+      const maxTranslate = Math.min(totalScroll, stopAt);
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top 30%",
-        end: () => `+=${totalScroll + 800}`,  
-        scrub: true,
-        pin: true,
-        anticipatePin: 1,
-        // markers: true,
-        invalidateOnRefresh: true,
-      },
-    });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 30%",
+          end: () => `+=${maxTranslate + 1400}`,
+          scrub: true,
+          pin: true,
+          anticipatePin: 1,
+          // markers: true,
+          invalidateOnRefresh: true,
+        },
+      });
 
-    // 🔹 PHASE 1 – entrance animations
-    tl.from(pc1Ref.current, { x: 50 })
-      .from(mobile1Ref.current, { opacity: 0, y: 50 }, "<")
-      .from(pc2Ref.current, { scale: 1.4 }, "<")
-      .from(mobile2Ref.current, { y: -50 }, "<");
+      // 🔹 PHASE 1 – entrance animations
+      tl.from(pc1Ref.current, { x: 50 })
+        .from(mobile1Ref.current, { opacity: 0, y: 50 }, "<")
+        .from(pc2Ref.current, { scale: 1.4 }, "<")
+        .from(mobile2Ref.current, { y: -50 }, "<");
 
-    // 🔹 PHASE 2 – horizontal scroll
-    tl.to(track, {
-      x: -maxTranslate,
-      ease: "none",
-    });
 
-  }, sectionRef);
 
-  return () => ctx.revert();
-}, []);
+      // 🔹 PHASE 2 – horizontal scroll
+      tl.to(track, {
+        x: maxTranslate,
+        ease: "none",
+      },);
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
 
 
@@ -78,10 +80,10 @@ export default function ParallaxBlocks() {
   return (
     <>
 
-      <div className="size-72  w-screen" >
+      <div  className="size-72  w-screen" >
 
       </div>
-      <div ref={sectionRef}   className="relative  -red-500  overflow-visible">
+      <div ref={sectionRef} className="relative    overflow-visible">
 
         <div className="pointer-events-none absolute   inset-0 -left-[20%] flex gap-10 px-[10px]">
           <div ref={trackRef} className="flex gap-12 *:h-[44vh]">
@@ -107,9 +109,10 @@ export default function ParallaxBlocks() {
           <img src={pc1} className="shrink-0 h-70  " />
 
         </div>
-      
 
       </div>
+        {/* <div style={{ height:  800 }} /> */}
+
 
 
     </>

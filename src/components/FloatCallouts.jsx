@@ -18,36 +18,36 @@ export const FEATURES = [
     id: 1,
     icon: BrushIcon,
     color: "#8AB4F8",
-    x: -160,
+    x:  -200,
     y: -120,
   },
   {
     id: 2,
     icon: DevicesIcon,
     color: "#F28B82",
-    x: 160,
-    y: -120,
+    x:  -460,
+    y: -20,
   },
   {
     id: 3,
     icon: AutoFixHighIcon,
     color: "#81C995",
-    x: 180,
-    y: 60,
+    x: -400,
+    y: 100,
   },
   {
     id: 4,
     icon: SecurityIcon,
     color: "#FDD663",
-    x: -180,
+    x: -40,
     y: 90,
   },
   {
     id: 5,
     icon: ShoppingBagIcon,
     color: "#C58AF9",
-    x: 0,
-    y: -100,
+    x: -50,
+    y: -110,
   },
 ];
 
@@ -62,10 +62,10 @@ export default function FloatCallouts() {
       gsap.fromTo(
         iconsRef.current,
         {
-          opacity: 0,
+          opacity: 0.7,
           scale: 0.8,
-          x: (i) => FEATURES[i].x * 1.5,
-          y: (i) => FEATURES[i].y * 1.5 ,
+          x: (i) => FEATURES[i].x * 1.3,
+          y: (i) => FEATURES[i].y * 1.3 ,
         },
         {
           opacity: 1,
@@ -77,7 +77,7 @@ export default function FloatCallouts() {
           stagger: 0.12,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top center",
+            start: "top 20%",
             end: "bottom 90%",
             scrub: true,
           },
@@ -91,7 +91,7 @@ export default function FloatCallouts() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen flex items-center justify-center  "
+      className="relative h-screen flex items-center justify-end  "
     >
       {/* HERO */}
       <div className="relative z-10 w-[600px] h-[340px] rounded-3xl      ">
